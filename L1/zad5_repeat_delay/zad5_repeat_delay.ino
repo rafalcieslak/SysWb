@@ -1,18 +1,16 @@
-int pin_in = 2;
-int pin_out = 3;
+int PIN_IN = 2;
+int PIN_OUT = 3;
 
-int buffer[100];
-int c = 0;
+int buffer[256];
+byte c = 0;
 
 void setup() {
-  pinMode(pin_in, INPUT);
-  pinMode(pin_out, OUTPUT);
+  pinMode(PIN_IN, INPUT);
+  pinMode(PIN_OUT, OUTPUT);
 }
 
 void loop() {
-  buffer[(c-1)%100] = digitalRead(pin_in);
-  digitalWrite(pin_out,buffer[c%100]);
-  c++;
-  if(c>100) c-=100;
-  delay(10);
+  buffer[c-1] = digitalRead(PIN_IN);
+  digitalWrite(PIN_OUT,buffer[c++]);
+  delay(1000/256);
 }
