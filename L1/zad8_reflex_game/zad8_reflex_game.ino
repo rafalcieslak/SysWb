@@ -5,8 +5,7 @@ int led_pins [4] = {3,5,7,9};
 
 typedef enum GameStates{
   GAME_STATE_WAITING,
-  GAME_STATE_LEDON,
-  GAME_STATE_FINISHED
+  GAME_STATE_LEDON
 }GameStates;
 
 GameStates state;
@@ -35,10 +34,10 @@ void PrepareNextLED(){
 void NewGame(){
   setNthLED(-1);
   points = 0;
-  rounds = 1;
+  rounds = 0;
   Serial.println("Type anything to start a new game.");
   WaitForInput();
-  PrepareNextLED();
+  NextRound();
 }
 
 void setup(){
@@ -128,11 +127,12 @@ void WinRound(){
   setNthLED(255);
   unsigned long t = millis() - LED_time;
   int pts = TimeToPts(t);
-  if(t < 150) Serial.println("IMPOSSIBRU!!!");
-  if(t < 250) Serial.println("Awesome!");
-  if(t < 350) Serial.println("Great!");
-  if(t < 500) Serial.println("Nice.");
-  else        Serial.println("Good");
+  if     (t < 150) Serial.println("IMPOSSIBRU!!!");
+  else if(t < 250) Serial.println("Awesome!");
+  else if(t < 350) Serial.println("Great!");
+  else if(t < 500) Serial.println("Nice.");
+  else if(t < 1000)Serial.println("Good.");
+  else             Serial.println("Correct button, but no points.");
   WaitForNoPress();
   Serial.print("Points won this round: ");
   Serial.println(pts);
@@ -147,15 +147,10 @@ void loop(){
   int v = getButton();
   if(state == GAME_STATE_WAITING){
     setNthLED(255);
-    if(millis() > LED_time){
-      state = GAME_STATE_LEDON;
-      return;
-    }
-    if(v != -1){ // if anything is pressed
-      LooseRound(v);
-    }
+    if(v != -1) LooseRound(v);
+    if(millis() > LED_time) state = GAME_STATE_LEDON;
   }
-  if(state == GAME_STATE_LEDON){
+  else if(state == GAME_STATE_LEDON){
     setNthLED(LED_id);
     if(v == LED_id) WinRound();
     else if(v != -1) LooseRound(v);
