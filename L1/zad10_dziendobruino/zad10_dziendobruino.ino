@@ -45,7 +45,10 @@ void setDAC(byte b){
 
 void loop(){
   while(1){
-    if(analogRead(in_pin) > 850 && state == STATE_IDLE){
+    //Serial.println(analogRead(in_pin));
+    //delay(200);
+    //return;
+    if(analogRead(in_pin) > 920 && state == STATE_IDLE){
       Serial.println("Dzien");
       float scale = random(1000)/1000.0;
       scale = 2.0*scale - 1.0;
@@ -53,7 +56,7 @@ void loop(){
       Timer1.setPeriod(scale*1000000.0/SAMPLE_RATE);
       volume = random(2000)/3000.0 + 1.0/3.0;
       state = STATE_PLAY;
-      while(analogRead(in_pin) > 700);
+      while(analogRead(in_pin) > 850);
       Serial.println("dobry.");
       delay(1000);
     }
