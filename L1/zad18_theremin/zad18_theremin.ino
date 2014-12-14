@@ -35,25 +35,26 @@ void setup(){
 }
 
 void loop(){
-  //Serial.println(vol);
+  //Serial.println(debug);
   vol = pow(10000,analogRead(3)/1024.0)/3600.0;
   if(vol < 0.01) vol = 0.0;
   freq = 80.0*pow(16,analogRead(4)/1024.0);
-  delay(40);
+  delay(10);
   
 }
 
 int getsample(float p){
-  float s = 128.0*p;//sin(p*2.0*3.141529);
-  if(s <= 128.0) s = 0.0; else s = 1.0;
-  float q = (s*2.0)-1.0;
-  return q*min(vol,1.0);
+  float s = 256.0*p;//sin(p*2.0*3.141529);
+  //if(s <= 128.0) s = 0.0; else s = 255.0;
+  //float q = (s*2.0)-1.0;
+  debug = s;
+  return s*min(vol,1.0);
 }
 void timer_int(){
-  static float phase = 0;
+  static float phase ;
   phase += freq/SAMPLE_RATE;
   if(phase >= 1.0) phase -= 1.0;
   int sample = getsample(phase);
-  debug = sample;
+  //debug = sample;
   setDAC(sample);
 }
