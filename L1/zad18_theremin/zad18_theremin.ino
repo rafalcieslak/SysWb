@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <TimerOne.h>
-const int DAC_SS_pin = 8;
+const int DAC_SS_pin = 10;
 #define SAMPLE_RATE 8000
 
 volatile float freq = 430.0;
@@ -27,7 +27,7 @@ void setup(){
   pinMode(DAC_SS_pin, OUTPUT);
   Serial.begin(115200);
   SPI.begin(); 
-  SPI.setDataMode(SPI_MODE1);
+  SPI.setDataMode(SPI_MODE2);
   SPI.setClockDivider(SPI_CLOCK_DIV2); 
   Timer1.initialize(1000000/SAMPLE_RATE);
   Timer1.attachInterrupt(timer_int);
@@ -35,7 +35,7 @@ void setup(){
 }
 
 void loop(){
-  //Serial.println(debug);
+  Serial.println(debug);
   vol = pow(10000,analogRead(3)/1024.0)/3600.0;
   if(vol < 0.01) vol = 0.0;
   freq = 80.0*pow(16,analogRead(4)/1024.0);
@@ -55,6 +55,6 @@ void timer_int(){
   phase += freq/SAMPLE_RATE;
   if(phase >= 1.0) phase -= 1.0;
   int sample = getsample(phase);
-  //debug = sample;
+  debug = sample;
   setDAC(sample);
 }
