@@ -213,7 +213,7 @@ void loop(){
 inline signed char getsample(word p){
   //return (p<=32250)?-100:100;
   return p/256-127;
-  //return abs(p/512-255);
+  //return abs(p/512-255)-127;
   //return sin(3.141529*2.0*p);
 }
 
