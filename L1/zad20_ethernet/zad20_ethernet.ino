@@ -10,7 +10,7 @@ void setup(){
   Serial.begin(112500);
   ether.begin(sizeof Ethernet::buffer, mymac);
   const static byte ip[] = {10,0,0,2};
-  const static byte gw[] = {192,168,1,193};
+  const static byte gw[] = {10,0,0,1};
   ether.staticSetup(ip, gw);
   ether.hisport = 80;
   pinMode(2,OUTPUT);

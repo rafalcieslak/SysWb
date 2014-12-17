@@ -27,19 +27,36 @@ void setup(){
   pinMode(DAC_SS_pin, OUTPUT);
   Serial.begin(115200);
   SPI.begin(); 
-  SPI.setDataMode(SPI_MODE2);
+  SPI.setDataMode(SPI_MODE1);
   SPI.setClockDivider(SPI_CLOCK_DIV2); 
   Timer1.initialize(1000000/SAMPLE_RATE);
   Timer1.attachInterrupt(timer_int);
-  Serial.println("adsadsad");
 }
 
+float fhist[100];
+float vhist[100];
+int n = 0;
+
 void loop(){
-  Serial.println(debug);
-  vol = pow(10000,analogRead(3)/1024.0)/3600.0;
+  cli();
+  n++;
+  n %= 100;
+  bool record = (analogRead(2) < 500);
+  bool playback = (analogRead(1) < 500);
+  vol = pow(10000,analogRead(3)/1024.0)/5000.0;
   if(vol < 0.01) vol = 0.0;
   freq = 80.0*pow(16,analogRead(4)/1024.0);
-  delay(10);
+  Serial.println(debug);
+  if(record){
+     fhist[n] = freq;
+     vhist[n] = vol;
+  }
+  if(playback){
+     freq = fhist[n];
+     vol  = vhist[n];
+  }
+  sei();
+  delay(20);
   
 }
 
